@@ -6,41 +6,48 @@ import java.util.*;
 public class OrdenacaoExterna {
     static final String nomeArquivo = "output/conta.db";
     static final String PREFIXO = ".db";
-    static final int ramSize = 4;
     static long ptrControl = 4;
+    static int limite;
+    static String nomeArquivoFinal = "";
 
     public static void main(String[] args) {
         int tamanho = 4;
-        int caminhos = 2;
-        dist(tamanho, caminhos);
+        int caminhos = 3;
+        limite = dist(tamanho, caminhos);
 //        System.out.print("tmp0.db -> ");
 //        listAccouts("output/tmp0.db");
 //        System.out.println("\n---------------");
 //        System.out.print("tmp1.db -> ");
 //        listAccouts("output/tmp1.db");
 //        System.out.println("\n---------------");
-        int limite = (int) Math.pow(caminhos, tamanho);
+//        System.out.print("tmp2.db -> ");
+//        listAccouts("output/tmp2.db");
+        final String spacer = "\n---------------\n";
         boolean isBase = true;
-        while (tamanho <= limite) {
+//        while (tamanho < limite) {
+        while (nomeArquivoFinal.equals("")) {
             intercalacao(tamanho, caminhos, isBase);
-            System.out.print("tmp0.db -> ");
+            System.out.print(spacer + "tmp0.db -> ");
             listAccouts("output/tmp0.db");
-            System.out.println("\n---------------");
-            System.out.print("tmp1.db -> ");
+            System.out.print(spacer + "tmp1.db -> ");
             listAccouts("output/tmp1.db");
-            System.out.println("\n---------------");
-            System.out.print("tmp2.db -> ");
+            System.out.print(spacer + "tmp2.db -> ");
             listAccouts("output/tmp2.db");
-            System.out.println("\n---------------");
-            System.out.print("tmp3.db -> ");
+            System.out.print(spacer + "tmp3.db -> ");
             listAccouts("output/tmp3.db");
-            System.out.println("\n---------------");
+            System.out.print(spacer + "tmp4.db -> ");
+            listAccouts("output/tmp4.db");
+            System.out.print(spacer + "tmp5.db -> ");
+            listAccouts("output/tmp5.db");
             tamanho *= caminhos;
             isBase = !isBase;
         }
+        System.out.println("\n---------------");
+        System.out.println("Arquivo final: " + nomeArquivoFinal);
     }
 
-    public static void dist(int tam, int caminhos) {
+    public static int dist(int tam, int caminhos) {
+        int quantidade = 0;
         try {
             List<Conta> contas = new ArrayList<>();
             RandomAccessFile[] temp = new RandomAccessFile[caminhos];
@@ -63,6 +70,7 @@ public class OrdenacaoExterna {
                         temp[i].writeInt(ba.length);
                         temp[i].write(ba);
                     }
+                    quantidade += contas.size();
                     contas.clear();
                 }
             }
@@ -73,6 +81,7 @@ public class OrdenacaoExterna {
             System.out.println("Erro dist. " + e.getMessage());
             e.printStackTrace();
         }
+        return quantidade;
     }
 
     public static void intercalacao(int tam, int caminhos, boolean isBase) {
@@ -107,7 +116,11 @@ public class OrdenacaoExterna {
                 var firstConta = ordered.get(0);
 
                 temp2[tempPos].writeConta(firstConta.getValue());
-                if (temp2[tempPos].size % (tam * 2) == 0) {
+                if (temp2[tempPos].size == limite) {
+                    nomeArquivoFinal = temp2[tempPos].fileName;
+                    break;
+                }
+                if (temp2[tempPos].size % (tam * caminhos) == 0) {
                     tempPos++;
                     if (tempPos == caminhos) {
                         tempPos = 0;
@@ -118,6 +131,9 @@ public class OrdenacaoExterna {
                 }
                 map.remove(firstConta.getKey());
             }
+
+            for (var t : temp1) t.file.close();
+            for (var t : temp2) t.file.close();
         } catch (Exception e) {
             System.out.println("Erro intercalação. " + e.getMessage());
             e.printStackTrace();

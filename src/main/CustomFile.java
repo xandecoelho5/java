@@ -7,9 +7,11 @@ public class CustomFile {
     public RandomAccessFile file;
     public int size;
     public int readRegisterSize;
+    public String fileName;
 
     public CustomFile(String path) {
         try {
+            fileName = path;
             file = new RandomAccessFile(path, "rw");
             size = 0;
             readRegisterSize = 0;

@@ -159,7 +159,7 @@ public class Crud {
 
     public static Conta createAccount() {
         int id = (int) (Math.random() * 100);
-        var l = List.of(5, 28, 10, 40, 35, 7, 12, 2, 21, 11, 29, 27, 9, 38, 8, 49, 3, 15, 13, 30, 17, 46, 18, 36, 1, 4, 34, 16, 19, 22, 20);
+        var l = List.of(5, 28, 10, 40, 35, 7, 12, 2, 21, 11, 29, 27, 9, 38, 8, 49, 3, 15, 13, 30, 17, 46, 18, 36, 1, 4, 34, 16, 19, 22, 20);//, 42, 53, 6, 31, 14, 25, 37, 52);
 
         return new Conta(l.get(pos++), "andrei", "mail", "nomeUser", "senha", "123", "ita", 0, 2f);
     }
